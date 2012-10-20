@@ -458,9 +458,25 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
         // TODO: how to pack this into PSTCollectionViewFlowLayout?
         if ([self.collectionViewLayout isKindOfClass:[PSTCollectionViewFlowLayout class]]) {
             PSTCollectionViewFlowLayout *flowLayout = (PSTCollectionViewFlowLayout *)self.collectionViewLayout;
-            targetRect.size.height += flowLayout.scrollDirection == UICollectionViewScrollDirectionVertical ? flowLayout.minimumLineSpacing : flowLayout.minimumInteritemSpacing;
-            targetRect.size.width += flowLayout.scrollDirection == UICollectionViewScrollDirectionVertical ? flowLayout.minimumInteritemSpacing : flowLayout.minimumLineSpacing;
+            
+            if (flowLayout.scrollDirection == UICollectionViewScrollDirectionHorizontal) {
+                switch (scrollPosition) {
+                    case PSTCollectionViewScrollPositionLeft:
+                        if (self.contentOffset.x < targetRect.origin.x) {
+                            targetRect.origin.x +=  self.frame.size.width - targetRect.size.width;
+                        }
+                        break;
+                    case PSTCollectionViewScrollPositionRight:
+                        if (self.contentOffset.x > targetRect.origin.x) {
+                            targetRect.origin.x = MAX(targetRect.origin.x, targetRect.origin.x - self.frame.size.width - targetRect.size.width);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
+        
         [self scrollRectToVisible:targetRect animated:animated];
     }
 }
