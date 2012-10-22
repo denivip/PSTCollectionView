@@ -464,6 +464,7 @@ static void PSTCollectionViewCommonSetup(PSTCollectionView *_self) {
                     case PSTCollectionViewScrollPositionLeft:
                         if (self.contentOffset.x < targetRect.origin.x) {
                             targetRect.origin.x +=  self.frame.size.width - targetRect.size.width;
+                            targetRect.origin.x = MIN(targetRect.origin.x, self.contentSize.width - targetRect.size.width);
                         }
                         break;
                     case PSTCollectionViewScrollPositionRight:
